@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Arama motorlarının siteyi indekslemesini engeller (Gizli Link Mantığı) -->
+  <!-- Arama motorlarının siteyi indekslemesini engeller -->
   <meta name="robots" content="noindex, nofollow">
-  <title>Macerasonu - Seyyahın Günlüğü</title>
+  <title>Macerasonu - Kişisel Hatıra Günlüğü</title>
   
   <!-- Fontlar & İkonlar -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -65,7 +65,7 @@
     #welcome-screen {
       position: fixed;
       inset: 0;
-      background: rgba(10, 12, 22, 0.95);
+      background: rgba(10, 12, 22, 0.96);
       backdrop-filter: blur(12px);
       z-index: 999;
       display: flex;
@@ -107,9 +107,10 @@
     .intro-subtitle {
       font-style: italic;
       color: var(--text-muted);
-      max-width: 480px;
+      max-width: 500px;
       margin-bottom: 32px;
       font-size: 1.1rem;
+      line-height: 1.6;
     }
 
     .btn-enter {
@@ -132,19 +133,64 @@
       box-shadow: 0 0 35px rgba(255, 215, 135, 0.8);
     }
 
+    /* YÖNETİCİ KONTROL ÇUBUĞU */
+    .admin-bar {
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 0 20px;
+      margin-bottom: 10px;
+    }
+
+    .admin-btn {
+      background: rgba(20, 24, 43, 0.9);
+      border: 1px solid var(--gold-primary);
+      color: var(--gold-primary);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .admin-btn:hover {
+      background: var(--gold-primary);
+      color: #121526;
+    }
+
+    .admin-btn.active-mode {
+      background: #ef4444;
+      border-color: #ef4444;
+      color: #fff;
+    }
+
+    /* DÜZENLENEBİLİR ALAN VURGUSU */
+    .editable-active [contenteditable="true"] {
+      outline: 2px dashed rgba(230, 183, 97, 0.7);
+      background: rgba(230, 183, 97, 0.1);
+      border-radius: 4px;
+      padding: 2px 4px;
+      cursor: text;
+    }
+
     /* ANA KAPSAYICI */
     .container {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 30px 20px 80px 20px;
+      padding: 10px 20px 80px 20px;
       position: relative;
       z-index: 1;
     }
 
-    /* ÜST BAŞLIK & LOGO */
+    /* ÜST BAŞLIK */
     header {
       text-align: center;
-      margin-bottom: 35px;
+      margin-bottom: 30px;
     }
 
     .site-title {
@@ -170,7 +216,7 @@
       display: flex;
       justify-content: center;
       gap: 12px;
-      margin-bottom: 40px;
+      margin-bottom: 35px;
       flex-wrap: wrap;
     }
 
@@ -178,15 +224,12 @@
       background: rgba(25, 30, 50, 0.7);
       border: 1px solid var(--glass-border);
       color: var(--text-muted);
-      padding: 12px 26px;
+      padding: 12px 24px;
       border-radius: 30px;
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 0.95rem;
       cursor: pointer;
       transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
       backdrop-filter: blur(8px);
     }
 
@@ -203,7 +246,7 @@
       box-shadow: 0 0 15px rgba(230, 183, 97, 0.2);
     }
 
-    /* SEKMELER İÇERİK ALANI */
+    /* SEKMELER */
     .tab-content {
       display: none;
       animation: fadeIn 0.4s ease;
@@ -229,15 +272,6 @@
       position: relative;
     }
 
-    .book-container::after {
-      content: "";
-      position: absolute;
-      top: 0; bottom: 0; left: 50%;
-      width: 2px;
-      background: linear-gradient(to bottom, transparent, rgba(114, 82, 45, 0.15), transparent);
-      display: none; /* Mobilde gizle */
-    }
-
     .prologue-text {
       font-family: 'Spectral', serif;
       font-size: 1.25rem;
@@ -256,7 +290,7 @@
       padding-bottom: 15px;
     }
 
-    /* HATIRA KARTLARI (KİTAP SAYFASI DÜZENİ) */
+    /* HATIRA KARTLARI */
     .memories-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -272,6 +306,7 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      position: relative;
       transition: transform 0.3s ease;
     }
 
@@ -279,9 +314,31 @@
       transform: translateY(-5px);
     }
 
+    .delete-card-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(220, 38, 38, 0.85);
+      color: white;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+    }
+
+    .editable-active .delete-card-btn {
+      display: flex;
+    }
+
     .memory-img {
       width: 100%;
-      height: 220px;
+      height: 230px;
       object-fit: cover;
       border-bottom: 2px solid var(--book-paper-border);
       background: #dfd2b9;
@@ -306,7 +363,7 @@
 
     .memory-title {
       font-family: 'Cinzel', serif;
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       color: #533816;
       margin-bottom: 12px;
     }
@@ -316,20 +373,23 @@
       font-size: 1.05rem;
       line-height: 1.6;
       color: #3b2d1c;
+      white-space: pre-line;
       flex-grow: 1;
     }
 
-    /* YENİ HATIRA / LİNK EKLEME BUTONU VE FORMU */
+    /* FORMLAR & MODALLAR */
     .add-action-bar {
-      margin-bottom: 30px;
-      text-align: right;
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
     }
 
     .btn-add {
       background: rgba(230, 183, 97, 0.15);
       border: 1px dashed var(--gold-primary);
       color: var(--gold-primary);
-      padding: 12px 24px;
+      padding: 10px 20px;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
@@ -347,7 +407,7 @@
       border: 1px solid var(--gold-primary);
       border-radius: 12px;
       padding: 24px;
-      margin-bottom: 35px;
+      margin-bottom: 30px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
@@ -394,11 +454,12 @@
       border-radius: 12px;
       padding: 20px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      position: relative;
     }
 
     .video-embed {
       width: 100%;
-      height: 200px;
+      height: 210px;
       border-radius: 8px;
       border: none;
       background: #000;
@@ -416,18 +477,17 @@
       color: var(--text-muted);
       font-size: 0.95rem;
       line-height: 1.5;
+      white-space: pre-line;
     }
 
-    /* ANASAYFA VİTRİN */
+    /* ANASAYFA HERO */
     .home-hero {
       background: linear-gradient(135deg, rgba(30, 36, 63, 0.8), rgba(20, 24, 43, 0.9));
       border: 1px solid var(--glass-border);
       border-radius: 16px;
       padding: 40px;
       text-align: center;
-      margin-bottom: 40px;
-      position: relative;
-      overflow: hidden;
+      margin-bottom: 30px;
     }
 
     .home-hero h2 {
@@ -438,8 +498,8 @@
     }
 
     .home-hero p {
-      max-width: 650px;
-      margin: 0 auto 24px;
+      max-width: 700px;
+      margin: 0 auto 20px;
       color: #cbd5e1;
       font-size: 1.1rem;
       line-height: 1.7;
@@ -448,7 +508,7 @@
     .stats-row {
       display: flex;
       justify-content: center;
-      gap: 30px;
+      gap: 20px;
       margin-top: 25px;
       flex-wrap: wrap;
     }
@@ -456,9 +516,9 @@
     .stat-pill {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(230, 183, 97, 0.2);
-      padding: 10px 22px;
+      padding: 8px 20px;
       border-radius: 30px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: var(--gold-hover);
     }
 
@@ -470,12 +530,19 @@
 </head>
 <body>
 
-  <!-- 1. GİRİŞ HOŞ GELDİNİZ (INTRO) EKRANI -->
+  <!-- YÖNETİCİ KONTROL ÇUBUĞU (EDIT BUTONU) -->
+  <div class="admin-bar">
+    <button class="admin-btn" id="btn-toggle-edit" onclick="toggleEditMode()">✏️ Düzenleme Modu: KAPALI</button>
+    <button class="admin-btn" id="btn-save-all" style="display:none;" onclick="saveAllChanges()">💾 Tüm Değişiklikleri Kaydet</button>
+    <button class="admin-btn" onclick="exportData()">📤 Yedek İndir</button>
+  </div>
+
+  <!-- GİRİŞ HOŞ GELDİNİZ (INTRO) EKRANI -->
   <div id="welcome-screen">
     <div class="intro-emblem">✦ 📖 ✦</div>
-    <h1 class="intro-title">Macerasonu</h1>
-    <p class="intro-subtitle">
-      "Yıldızlar Teyvat'ın göğünde parıldarken, geride kalan tüm patikaların ve hatıraların saklandığı o gizli günlük..."
+    <h1 class="intro-title" id="intro-title" data-editable="true">Macerasonu</h1>
+    <p class="intro-subtitle" id="intro-desc" data-editable="true">
+      "Yıldızlar Teyvat'ın göğünde parıldarken ve hayat kendi patikasında akarken, geride kalan tüm adımların ve anıların saklandığı kişisel günlük..."
     </p>
     <button class="btn-enter" onclick="openBook()">GÜNLÜĞÜ AÇ</button>
   </div>
@@ -483,159 +550,145 @@
   <!-- ANA UYGULAMA ALANI -->
   <div class="container">
     <header>
-      <div class="site-title">✦ MACERASONU ✦</div>
-      <div class="site-tagline">Bir Seyyahın Genshin Impact Hatıra Defteri</div>
+      <div class="site-title" id="site-header-title" data-editable="true">✦ MACERASONU ✦</div>
+      <div class="site-tagline" id="site-header-desc" data-editable="true">Kişisel Yolculuk, Genshin Hatıraları & Hayat Notları</div>
     </header>
 
     <!-- SEKME BUTONLARI -->
     <nav class="nav-tabs">
       <button class="tab-btn active" onclick="switchTab('tab-home')">🏰 Anasayfa</button>
       <button class="tab-btn" onclick="switchTab('tab-prologue')">📜 Önsöz (İç Dökme)</button>
-      <button class="tab-btn" onclick="switchTab('tab-memories')">📸 Hatıralar & Notlar</button>
+      <button class="tab-btn" onclick="switchTab('tab-memories')">📸 Hatıralar & Karakterler</button>
       <button class="tab-btn" onclick="switchTab('tab-videos')">🎬 Videolar & Linkler</button>
     </nav>
 
     <!-- SEKME 1: ANASAYFA -->
     <section id="tab-home" class="tab-content active">
       <div class="home-hero">
-        <h2>Yolculuğun Tamamlandığı Yer</h2>
-        <p>
-          Bu sayfa, fırtınalı dağlardan uçsuz bucaksız denizlere kadar birlikte geçirdiğimiz anların, 
-          göz alıcı manzaraların ve unutulmaz diyalogların saklandığı kişisel bir arşivdir.
+        <h2 id="home-title" data-editable="true">Yolculuğun Kesiştiği Yer</h2>
+        <p id="home-text" data-editable="true">
+          Burası hem Teyvat'taki maceralarımın, ekran görüntülerimin ve sevdiğim karakterlerin; 
+          hem de gerçek hayattaki düşüncelerimin, sessiz anlarımın bir araya geldiği şahsi sığınağım.
         </p>
         <div class="stats-row">
-          <div class="stat-pill" id="stat-memory-count">✦ 3 Kayıtlı Hatıra</div>
-          <div class="stat-pill">✦ Teyvat Arşivi</div>
-          <div class="stat-pill">✦ Gizli Günlük</div>
+          <div class="stat-pill" id="stat-memory-count">✦ 0 Kayıtlı Hatıra</div>
+          <div class="stat-pill" id="stat-video-count">✦ 0 Kayıtlı Video</div>
+          <div class="stat-pill">✦ Kişisel Arşiv</div>
         </div>
-      </div>
-
-      <div style="text-align: center; margin-top: 20px;">
-        <p style="color: var(--text-muted); font-size: 0.95rem;">
-          Hatıraları okumak için yukarıdaki sekmeleri kullanabilir veya sağ üstten yeni anılar ekleyebilirsin.
-        </p>
       </div>
     </section>
 
     <!-- SEKME 2: ÖNSÖZ (İÇİNİ DÖKME ALANI) -->
     <section id="tab-prologue" class="tab-content">
       <div class="book-container">
-        <h2 class="prologue-title">Seyyahın Önsözü</h2>
-        <div class="prologue-text" id="prologue-content">
-Buraya istediğin gibi içini dökebilirsin...
+        <h2 class="prologue-title" id="prologue-title" data-editable="true">Yolculuğun Başlangıcı ve Amacı</h2>
+        <div class="prologue-text" id="prologue-content" data-editable="true">
+Burası senin tamamen özgür olduğun yer...
 
-Oyun boyunca gördüğün gün batımları, bazen saatlerce aynı manzarada durup müziği dinleyişimiz, zorlu boss savaşlarından sonraki sessizlik... 
+Buraya ister hayatınla ilgili düşüncelerini, ister yorgun bir günün ardından hissettiklerini, ister Genshin'e ilk başladığın günü ya da bu günlüğü neden açtığını dilediğin gibi uzun uzun yazabilirsin.
 
-Bu sayfa, bu günlüğün asıl amacını tutan yer. Teyvat sadece bir oyun haritası değildi; bazen günün yorgunluğunu unuttuğumuz, bazen de sadece kafa dinlemek için kaçtığımız bir sığınaktı. 
-
-(Not: Aşağıdaki 'Önsözü Düzenle' butonuyla bu yazıyı dilediğin gibi değiştirebilirsin; yazdıkların tarayıcında saklanır.)
-        </div>
-        <div style="margin-top: 25px; text-align: right;">
-          <button class="btn-add" style="background:#533816; color:#f4ecd8; border:none;" onclick="editPrologue()">✍️ Önsözü Düzenle</button>
+(Düzenleme Modunu açarak doğrudan bu yazının üzerine tıklayıp kendi kelimelerinle doldurabilirsin.)
         </div>
       </div>
     </section>
 
-    <!-- SEKME 3: HATIRALAR & EKRAN GÖRÜNTÜLERİ -->
+    <!-- SEKME 3: HATIRALAR & KARAKTERLER & EKRAN GÖRÜNTÜLERİ -->
     <section id="tab-memories" class="tab-content">
       <div class="add-action-bar">
-        <button class="btn-add" onclick="toggleAddMemoryModal()">+ Yeni Hatıra Ekle</button>
+        <button class="btn-add" onclick="toggleAddMemoryModal()">+ Yeni Hatıra / Karakter Ekle</button>
       </div>
 
-      <!-- Yeni Anı Ekleme Kartı -->
+      <!-- Yeni Anı Ekleme Alanı -->
       <div id="add-memory-modal" class="add-modal">
-        <h3 style="color: var(--gold-primary); margin-bottom: 16px; font-family: 'Cinzel';">Yeni Bir Hatıra Kaydet</h3>
+        <h3 style="color: var(--gold-primary); margin-bottom: 16px; font-family: 'Cinzel';">Yeni Hatıra Ekle</h3>
         <div class="form-group">
-          <label>Hatıra Başlığı / Mekan Adı:</label>
-          <input type="text" id="mem-title" class="form-control" placeholder="Örn: Guyun Taş Ormanı'nda Gün Batımı">
+          <label>Başlık (Karakter Adı, Mekan veya Olay):</label>
+          <input type="text" id="mem-title" class="form-control" placeholder="Örn: Raiden Shogun Build'im veya Sessiz Bir Akşam">
         </div>
         <div class="form-group">
-          <label>Tarih veya Not Etiketi:</label>
-          <input type="text" id="mem-date" class="form-control" placeholder="Örn: 14 Eylül - Mondstadt Gecesi">
+          <label>Tarih / Etiket:</label>
+          <input type="text" id="mem-date" class="form-control" placeholder="Örn: Eylül 2026 - Inazuma Hatırası">
         </div>
         <div class="form-group">
-          <label>Görsel URL'si (veya Ekran Görüntüsü Dosyası Yükle):</label>
-          <input type="text" id="mem-url" class="form-control" placeholder="https://resim-linki.com/foto.jpg" style="margin-bottom: 8px;">
-          <input type="file" id="mem-file" accept="image/*" class="form-control">
+          <label>Görsel (Bilgisayardan Dosya Seç ya da Doğrudan Link Yapıştır):</label>
+          <input type="file" id="mem-file" accept="image/*" class="form-control" style="margin-bottom: 8px;">
+          <input type="text" id="mem-url" class="form-control" placeholder="veya görsel bağlantısı (https://...)">
         </div>
         <div class="form-group">
-          <label>Hatıra Notun (Kısa veya Uzun):</label>
-          <textarea id="mem-note" class="form-control" rows="4" placeholder="O an ne hissediyordun? Hangi karakterle oradaydın?"></textarea>
+          <label>Notlar, Düşünceler, Hatıralar:</label>
+          <textarea id="mem-note" class="form-control" rows="4" placeholder="Buraya o anki duygularını, karakter hakkında düşüncelerini veya başına gelenleri yaz..."></textarea>
         </div>
-        <button class="btn-enter" style="font-size: 0.9rem; padding: 10px 24px;" onclick="saveNewMemory()">Kaydet ve Günlüğe Ekle</button>
+        <button class="btn-enter" style="font-size: 0.9rem; padding: 10px 24px;" onclick="saveNewMemory()">Kaydet</button>
       </div>
 
-      <!-- Hatıraların Listelendiği Kitap Sayfası Izgarası -->
-      <div class="memories-grid" id="memories-list">
-        <!-- Varsayılan örnek kartlar -->
-      </div>
+      <div class="memories-grid" id="memories-list"></div>
     </section>
 
     <!-- SEKME 4: VİDEOLAR & BAĞLANTILAR -->
     <section id="tab-videos" class="tab-content">
       <div class="add-action-bar">
-        <button class="btn-add" onclick="toggleAddVideoModal()">+ Video / Bağlantı Ekle</button>
+        <button class="btn-add" onclick="toggleAddVideoModal()">+ Video veya Link Ekle</button>
       </div>
 
-      <!-- Yeni Video Ekleme Kartı -->
+      <!-- Yeni Video Ekleme Alanı -->
       <div id="add-video-modal" class="add-modal">
-        <h3 style="color: var(--gold-primary); margin-bottom: 16px; font-family: 'Cinzel';">Video veya Dış Bağlantı Ekle</h3>
+        <h3 style="color: var(--gold-primary); margin-bottom: 16px; font-family: 'Cinzel';">Video / Link Ekle</h3>
         <div class="form-group">
           <label>Başlık:</label>
-          <input type="text" id="vid-title" class="form-control" placeholder="Örn: Teyvat Gece Müzikleri veya Boss Kesimi">
+          <input type="text" id="vid-title" class="form-control" placeholder="Örn: Spiral Abyss 12. Kat Temizliği ya da Özel Bir Müzik">
         </div>
         <div class="form-group">
-          <label>YouTube Embed Linki ya da Web Bağlantısı:</label>
-          <input type="text" id="vid-url" class="form-control" placeholder="https://www.youtube.com/embed/... ya da Google Drive linki">
+          <label>Bağlantı (YouTube Embed Linki, Normal Link veya Drive Linki):</label>
+          <input type="text" id="vid-url" class="form-control" placeholder="https://www.youtube.com/watch?v=... ya da link">
         </div>
         <div class="form-group">
-          <label>Açıklama / Not:</label>
-          <textarea id="vid-desc" class="form-control" rows="2" placeholder="Video hakkında kısa bir anı veya detay..."></textarea>
+          <label>Video Notu / Açıklama:</label>
+          <textarea id="vid-desc" class="form-control" rows="3" placeholder="Bu videoda ne oluyor?"></textarea>
         </div>
-        <button class="btn-enter" style="font-size: 0.9rem; padding: 10px 24px;" onclick="saveNewVideo()">Bağlantıyı Ekle</button>
+        <button class="btn-enter" style="font-size: 0.9rem; padding: 10px 24px;" onclick="saveNewVideo()">Kaydet</button>
       </div>
 
-      <div class="video-grid" id="video-list">
-        <!-- Örnek Video Kartı -->
-        <div class="video-card">
-          <iframe class="video-embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video" allowfullscreen></iframe>
-          <h4 class="video-title">Örnek Video / Kesit</h4>
-          <p class="video-desc">Genshin'de çektiğin kesitleri buraya embed linki veya drive linki olarak ekleyebilirsin.</p>
-        </div>
-      </div>
+      <div class="video-grid" id="video-list"></div>
     </section>
 
   </div>
 
   <script>
-    // Başlangıç Örnek Hatıraları (Yerel Depolamada yoksa yüklenir)
-    const initialMemories = [
-      {
-        title: "Karanlık Çökerken Qingce Köyü",
-        date: "Liyue Yolculuğu",
-        img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&auto=format&fit=crop&q=80",
-        note: "Teraslı pirinç tarlalarının arasından geçerken çalan o flüt melodisini unutmak imkansız. Saatlerce tepeye tırmanıp sırf manzaranın renk değişimini izlemiştik."
-      },
-      {
-        title: "Ejderhasırtı'nın Zirvesi (Dragonspine)",
-        date: "Mondstadt Anıları",
-        img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&auto=format&fit=crop&q=80",
-        note: "Soğuktan canımız azalırken bulduğumuz o son ısıtıcı sütun... Tam bir kaos ve kurtuluş anıydı."
-      }
-    ];
+    let isEditMode = false;
 
-    // Sayfa Yüklendiğinde
+    // Varsayılan İçerikler
+    const defaultData = {
+      introTitle: "Macerasonu",
+      introDesc: "Yıldızlar Teyvat'ın göğünde parıldarken ve hayat kendi patikasında akarken, geride kalan tüm adımların ve anıların saklandığı kişisel günlük...",
+      siteTitle: "✦ MACERASONU ✦",
+      siteTagline: "Kişisel Yolculuk, Genshin Hatıraları & Hayat Notları",
+      homeTitle: "Yolculuğun Kesiştiği Yer",
+      homeText: "Burası hem Teyvat'taki maceralarımın, ekran görüntülerimin ve sevdiğim karakterlerin; hem de gerçek hayattaki düşüncelerimin, sessiz anlarımın bir araya geldiği şahsi sığınağım.",
+      prologueTitle: "Yolculuğun Başlangıcı ve Amacı",
+      prologueText: "Burası senin tamamen özgür olduğun yer...\n\nBuraya ister hayatınla ilgili düşüncelerini, ister yorgun bir günün ardından hissettiklerini, ister Genshin'e ilk başladığın günü ya da bu günlüğü neden açtığını dilediğin gibi uzun uzun yazabilirsin.\n\n(Düzenleme Modunu açarak doğrudan bu yazının üzerine tıklayıp kendi kelimelerinle doldurabilirsin.)",
+      memories: [
+        {
+          id: 1,
+          title: "İlk Büyük Manzara",
+          date: "Teyvat Günlükleri",
+          img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&auto=format&fit=crop&q=80",
+          note: "Oyunda veya hayatta durup sadece izlemek istediğin o ilk anlar. İstediğin zaman bu kartı düzenleme modundayken silebilir veya yenilerini ekleyebilirsin."
+        }
+      ],
+      videos: []
+    };
+
+    let siteData = {};
+
     window.addEventListener('DOMContentLoaded', () => {
-      loadPrologue();
-      loadMemories();
+      loadAllData();
+      renderAll();
     });
 
-    // Açılış İntrosu
     function openBook() {
       document.getElementById('welcome-screen').classList.add('hidden');
     }
 
-    // Sekmeler Arası Geçiş
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -644,90 +697,148 @@ Bu sayfa, bu günlüğün asıl amacını tutan yer. Teyvat sadece bir oyun hari
       event.currentTarget.classList.add('active');
     }
 
-    // Önsöz Düzenleme Mantığı
-    function editPrologue() {
-      const current = document.getElementById('prologue-content').innerText;
-      const updated = prompt("Önsöz yazını güncelle:", current);
-      if (updated !== null && updated.trim() !== "") {
-        document.getElementById('prologue-content').innerText = updated;
-        localStorage.setItem('macerasonu_prologue', updated);
+    // DÜZENLEME MODU (EDIT MODE) AÇ / KAPA
+    function toggleEditMode() {
+      isEditMode = !isEditMode;
+      const body = document.body;
+      const toggleBtn = document.getElementById('btn-toggle-edit');
+      const saveBtn = document.getElementById('btn-save-all');
+
+      if (isEditMode) {
+        body.classList.add('editable-active');
+        toggleBtn.innerText = "❌ Düzenlemeyi Bitir";
+        toggleBtn.classList.add('active-mode');
+        saveBtn.style.display = "inline-block";
+        setEditable(true);
+      } else {
+        body.classList.remove('editable-active');
+        toggleBtn.innerText = "✏️ Düzenleme Modu: KAPALI";
+        toggleBtn.classList.remove('active-mode');
+        saveBtn.style.display = "none";
+        setEditable(false);
       }
     }
 
-    function loadPrologue() {
-      const saved = localStorage.getItem('macerasonu_prologue');
-      if (saved) {
-        document.getElementById('prologue-content').innerText = saved;
+    function setEditable(state) {
+      document.querySelectorAll('[data-editable="true"]').forEach(el => {
+        el.contentEditable = state;
+      });
+    }
+
+    // VERİLERİ KAYDETME & YÜKLEME
+    function saveAllChanges() {
+      // Metin alanlarını al
+      siteData.introTitle = document.getElementById('intro-title').innerText;
+      siteData.introDesc = document.getElementById('intro-desc').innerText;
+      siteData.siteTitle = document.getElementById('site-header-title').innerText;
+      siteData.siteTagline = document.getElementById('site-header-desc').innerText;
+      siteData.homeTitle = document.getElementById('home-title').innerText;
+      siteData.homeText = document.getElementById('home-text').innerText;
+      siteData.prologueTitle = document.getElementById('prologue-title').innerText;
+      siteData.prologueText = document.getElementById('prologue-content').innerText;
+
+      // Anı kartlarındaki inline düzenlemeleri senkronize et
+      const memCards = document.querySelectorAll('.memory-card');
+      memCards.forEach((card, index) => {
+        if (siteData.memories[index]) {
+          const t = card.querySelector('.memory-title');
+          const n = card.querySelector('.memory-note');
+          if (t) siteData.memories[index].title = t.innerText;
+          if (n) siteData.memories[index].note = n.innerText;
+        }
+      });
+
+      localStorage.setItem('macerasonu_db', JSON.stringify(siteData));
+      alert("✦ Tüm değişiklikler başarıyla tarayıcına kaydedildi!");
+    }
+
+    function loadAllData() {
+      const stored = localStorage.getItem('macerasonu_db');
+      if (stored) {
+        try {
+          siteData = JSON.parse(stored);
+        } catch (e) {
+          siteData = defaultData;
+        }
+      } else {
+        siteData = defaultData;
       }
     }
 
-    // Hatıraları Yükleme ve Render Etme
-    function loadMemories() {
-      const saved = localStorage.getItem('macerasonu_memories');
-      const memories = saved ? JSON.parse(saved) : initialMemories;
+    function renderAll() {
+      document.getElementById('intro-title').innerText = siteData.introTitle || defaultData.introTitle;
+      document.getElementById('intro-desc').innerText = siteData.introDesc || defaultData.introDesc;
+      document.getElementById('site-header-title').innerText = siteData.siteTitle || defaultData.siteTitle;
+      document.getElementById('site-header-desc').innerText = siteData.siteTagline || defaultData.siteTagline;
+      document.getElementById('home-title').innerText = siteData.homeTitle || defaultData.homeTitle;
+      document.getElementById('home-text').innerText = siteData.homeText || defaultData.homeText;
+      document.getElementById('prologue-title').innerText = siteData.prologueTitle || defaultData.prologueTitle;
+      document.getElementById('prologue-content').innerText = siteData.prologueText || defaultData.prologueText;
+
+      renderMemories();
+      renderVideos();
+    }
+
+    // HATIRALAR LİSTESİ
+    function renderMemories() {
       const list = document.getElementById('memories-list');
       list.innerHTML = "";
 
-      memories.forEach(item => {
+      siteData.memories.forEach((item, index) => {
         const card = document.createElement('div');
         card.className = 'memory-card';
         card.innerHTML = `
-          <img src="${item.img}" alt="${item.title}" class="memory-img" onerror="this.src='https://placehold.co/600x400/2f2519/f4ecd8?text=Hatıra+Görseli'">
+          <button class="delete-card-btn" title="Sil" onclick="deleteMemory(${index})">✖</button>
+          <img src="${item.img}" class="memory-img" onerror="this.src='https://placehold.co/600x400/2f2519/f4ecd8?text=Görsel+Bulunamadı'">
           <div class="memory-body">
             <div class="memory-meta">
-              <span>✦ ${item.date || 'Teyvat Hatırası'}</span>
+              <span>✦ ${item.date || 'Tarihsiz'}</span>
             </div>
-            <h3 class="memory-title">${item.title}</h3>
-            <p class="memory-note">${item.note}</p>
+            <h3 class="memory-title" data-editable="true">${item.title}</h3>
+            <p class="memory-note" data-editable="true">${item.note}</p>
           </div>
         `;
         list.appendChild(card);
       });
 
-      document.getElementById('stat-memory-count').innerText = `✦ ${memories.length} Kayıtlı Hatıra`;
+      document.getElementById('stat-memory-count').innerText = `✦ ${siteData.memories.length} Kayıtlı Hatıra`;
+      if (isEditMode) setEditable(true);
     }
 
-    // Yeni Hatıra Modal Aç/Kapat
     function toggleAddMemoryModal() {
-      const modal = document.getElementById('add-memory-modal');
-      modal.classList.toggle('active');
+      document.getElementById('add-memory-modal').classList.toggle('active');
     }
 
-    // Yeni Hatıra Kaydetme (Dosyadan veya URL'den)
     function saveNewMemory() {
-      const title = document.getElementById('mem-title').value;
-      const date = document.getElementById('mem-date').value;
-      const urlInput = document.getElementById('mem-url').value;
-      const note = document.getElementById('mem-note').value;
+      const title = document.getElementById('mem-title').value.trim();
+      const date = document.getElementById('mem-date').value.trim();
+      const urlInput = document.getElementById('mem-url').value.trim();
+      const note = document.getElementById('mem-note').value.trim();
       const fileInput = document.getElementById('mem-file');
 
       if (!title || !note) {
-        alert("Lütfen en azından bir başlık ve not ekleyin!");
+        alert("Lütfen en azından bir başlık ve bir not girin!");
         return;
       }
 
       if (fileInput.files && fileInput.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
-          commitMemory({ title, date, img: e.target.result, note });
+          addMemoryItem({ title, date, img: e.target.result, note });
         };
         reader.readAsDataURL(fileInput.files[0]);
       } else {
-        const img = urlInput.trim() !== "" ? urlInput : 'https://placehold.co/600x400/2f2519/f4ecd8?text=Genshin+Hatırası';
-        commitMemory({ title, date, img, note });
+        const img = urlInput !== "" ? urlInput : 'https://placehold.co/600x400/2f2519/f4ecd8?text=Hatıra';
+        addMemoryItem({ title, date, img, note });
       }
     }
 
-    function commitMemory(newMem) {
-      const saved = localStorage.getItem('macerasonu_memories');
-      const memories = saved ? JSON.parse(saved) : initialMemories;
-      memories.unshift(newMem);
-      localStorage.setItem('macerasonu_memories', JSON.stringify(memories));
-      
-      loadMemories();
+    function addMemoryItem(item) {
+      siteData.memories.unshift(item);
+      localStorage.setItem('macerasonu_db', JSON.stringify(siteData));
+      renderMemories();
       toggleAddMemoryModal();
 
-      // Formu sıfırla
       document.getElementById('mem-title').value = "";
       document.getElementById('mem-date').value = "";
       document.getElementById('mem-url').value = "";
@@ -735,48 +846,87 @@ Bu sayfa, bu günlüğün asıl amacını tutan yer. Teyvat sadece bir oyun hari
       document.getElementById('mem-file').value = "";
     }
 
-    // Video Modal Aç/Kapat
+    function deleteMemory(index) {
+      if (confirm("Bu hatırayı silmek istediğine emin misin?")) {
+        siteData.memories.splice(index, 1);
+        localStorage.setItem('macerasonu_db', JSON.stringify(siteData));
+        renderMemories();
+      }
+    }
+
+    // VİDEOLAR LİSTESİ
+    function renderVideos() {
+      const list = document.getElementById('video-list');
+      list.innerHTML = "";
+
+      siteData.videos.forEach((vid, index) => {
+        const card = document.createElement('div');
+        card.className = 'video-card';
+
+        let playerHtml = '';
+        if (vid.url.includes('youtube.com') || vid.url.includes('youtu.be')) {
+          let embed = vid.url.replace("watch?v=", "embed/").replace("youtu.be/", "www.youtube.com/embed/");
+          playerHtml = `<iframe class="video-embed" src="${embed}" allowfullscreen></iframe>`;
+        } else {
+          playerHtml = `<div style="padding: 24px; background: rgba(0,0,0,0.3); border-radius: 8px; margin-bottom: 12px; text-align: center;">
+            <a href="${vid.url}" target="_blank" style="color: var(--accent-cyan); text-decoration: underline; font-weight: 600;">🔗 Bağlantıyı Yeni Sekmede Aç</a>
+          </div>`;
+        }
+
+        card.innerHTML = `
+          <button class="delete-card-btn" title="Sil" onclick="deleteVideo(${index})">✖</button>
+          ${playerHtml}
+          <h4 class="video-title" data-editable="true">${vid.title}</h4>
+          <p class="video-desc" data-editable="true">${vid.desc}</p>
+        `;
+        list.appendChild(card);
+      });
+
+      document.getElementById('stat-video-count').innerText = `✦ ${siteData.videos.length} Kayıtlı Video`;
+      if (isEditMode) setEditable(true);
+    }
+
     function toggleAddVideoModal() {
-      const modal = document.getElementById('add-video-modal');
-      modal.classList.toggle('active');
+      document.getElementById('add-video-modal').classList.toggle('active');
     }
 
     function saveNewVideo() {
-      const title = document.getElementById('vid-title').value;
-      const url = document.getElementById('vid-url').value;
-      const desc = document.getElementById('vid-desc').value;
+      const title = document.getElementById('vid-title').value.trim();
+      const url = document.getElementById('vid-url').value.trim();
+      const desc = document.getElementById('vid-desc').value.trim();
 
       if (!title || !url) {
-        alert("Lütfen başlık ve video bağlantısını doldurun!");
+        alert("Lütfen başlık ve video linkini eksiksiz girin!");
         return;
       }
 
-      const list = document.getElementById('video-list');
-      const card = document.createElement('div');
-      card.className = 'video-card';
-      
-      let embedHtml = '';
-      if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        let embedUrl = url.replace("watch?v=", "embed/");
-        embedHtml = `<iframe class="video-embed" src="${embedUrl}" allowfullscreen></iframe>`;
-      } else {
-        embedHtml = `<div style="padding: 20px; background: rgba(0,0,0,0.3); border-radius: 8px; margin-bottom: 12px; text-align: center;">
-          <a href="${url}" target="_blank" style="color: var(--accent-cyan); text-decoration: underline;">🔗 Video / Bağlantıyı Aç</a>
-        </div>`;
-      }
-
-      card.innerHTML = `
-        ${embedHtml}
-        <h4 class="video-title">${title}</h4>
-        <p class="video-desc">${desc}</p>
-      `;
-
-      list.prepend(card);
+      siteData.videos.unshift({ title, url, desc });
+      localStorage.setItem('macerasonu_db', JSON.stringify(siteData));
+      renderVideos();
       toggleAddVideoModal();
 
       document.getElementById('vid-title').value = "";
       document.getElementById('vid-url').value = "";
       document.getElementById('vid-desc').value = "";
+    }
+
+    function deleteVideo(index) {
+      if (confirm("Bu videoyu silmek istediğine emin misin?")) {
+        siteData.videos.splice(index, 1);
+        localStorage.setItem('macerasonu_db', JSON.stringify(siteData));
+        renderVideos();
+      }
+    }
+
+    // YEDEKLEME (JSON İNDİR)
+    function exportData() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(siteData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "macerasonu_yedek.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
     }
   </script>
 </body>

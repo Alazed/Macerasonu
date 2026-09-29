@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Arama motorlarının siteyi indekslemesini engeller (Gizli Link Mantığı) -->
+  <meta name="robots" content="noindex, nofollow">
+  <title>Macerasonu - Seyyahın Günlüğü</title>
+  
+  <!-- Fontlar & İkonlar -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Nunito:wght@400;600;700&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #121526;
+      --bg-card: rgba(27, 32, 57, 0.85);
+      --book-paper: #f4ecd8;
+      --book-paper-border: #d4c29d;
+      --book-text: #2f2519;
+      --gold-primary: #e6b761;
+      --gold-hover: #ffd787;
+      --accent-cyan: #6ee7b7;
+      --accent-purple: #a78bfa;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --glass-border: rgba(230, 183, 97, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 20%, #1a1e38 0%, #0d0f1a 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Arka Plan Yıldız Efekti */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: 
+        radial-gradient(1.5px 1.5px at 40px 60px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 150px 220px, var(--gold-primary), rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 280px 120px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(1.5px 1.5px at 390px 450px, var(--accent-cyan), rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 520px 300px, var(--accent-purple), rgba(0,0,0,0));
+      background-repeat: repeat;
+      background-size: 600px 600px;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* GİRİŞ INTRO EKRANI */
+    #welcome-screen {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 12, 22, 0.95);
+      backdrop-filter: blur(12px);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    #welcome-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .intro-emblem {
+      font-size: 3rem;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 0 15px var(--gold-primary));
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .intro-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2.8rem;
+      color: var(--gold-primary);
+      letter-spacing: 4px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .intro-subtitle {
+      font-style: italic;
+      color: var(--text-muted);
+      max-width: 480px;
+      margin-bottom: 32px;
+      font-size: 1.1rem;
+    }
+
+    .btn-enter {
+      background: linear-gradient(135deg, #d49a37, #f7d58a);
+      color: #1a160d;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 14px 38px;
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(230, 183, 97, 0.5);
+      transition: all 0.3s ease;
+      letter-spacing: 2px;
+    }
+
+    .btn-enter:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 35px rgba(255, 215, 135, 0.8);
+    }
+
+    /* ANA KAPSAYICI */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 30px 20px 80px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ÜST BAŞLIK & LOGO */
+    header {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .site-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2.5rem;
+      color: var(--gold-primary);
+      letter-spacing: 3px;
+      text-shadow: 0 0 20px rgba(230, 183, 97, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .site-tagline {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      margin-top: 6px;
+    }
+
+    /* SEKME MENÜSÜ */
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: rgba(25, 30, 50, 0.7);
+      border: 1px solid var(--glass-border);
+      color: var(--text-muted);
+      padding: 12px 26px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(8px);
+    }
+
+    .tab-btn:hover {
+      color: var(--gold-hover);
+      border-color: var(--gold-primary);
+      transform: translateY(-2px);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(230, 183, 97, 0.25), rgba(167, 139, 250, 0.2));
+      color: var(--gold-primary);
+      border-color: var(--gold-primary);
+      box-shadow: 0 0 15px rgba(230, 183, 97, 0.2);
+    }
+
+    /* SEKMELER İÇERİK ALANI */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* KİTAP VE PARŞÖMEN GÖRÜNÜMÜ */
+    .book-container {
+      background: var(--book-paper);
+      color: var(--book-text);
+      border-radius: 12px;
+      padding: 45px 50px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 40px rgba(139, 90, 43, 0.2);
+      border: 4px double var(--book-paper-border);
+      position: relative;
+    }
+
+    .book-container::after {
+      content: "";
+      position: absolute;
+      top: 0; bottom: 0; left: 50%;
+      width: 2px;
+      background: linear-gradient(to bottom, transparent, rgba(114, 82, 45, 0.15), transparent);
+      display: none; /* Mobilde gizle */
+    }
+
+    .prologue-text {
+      font-family: 'Spectral', serif;
+      font-size: 1.25rem;
+      line-height: 1.9;
+      white-space: pre-line;
+      color: #2b2118;
+    }
+
+    .prologue-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2rem;
+      color: #6a4a20;
+      text-align: center;
+      margin-bottom: 25px;
+      border-bottom: 1px solid var(--book-paper-border);
+      padding-bottom: 15px;
+    }
+
+    /* HATIRA KARTLARI (KİTAP SAYFASI DÜZENİ) */
+    .memories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+    }
+
+    .memory-card {
+      background: var(--book-paper);
+      color: var(--book-text);
+      border-radius: 10px;
+      border: 2px solid var(--book-paper-border);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease;
+    }
+
+    .memory-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .memory-img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-bottom: 2px solid var(--book-paper-border);
+      background: #dfd2b9;
+    }
+
+    .memory-body {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .memory-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: #7b654b;
+      margin-bottom: 10px;
+      font-family: 'Spectral', serif;
+      font-weight: 600;
+    }
+
+    .memory-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.3rem;
+      color: #533816;
+      margin-bottom: 12px;
+    }
+
+    .memory-note {
+      font-family: 'Spectral', serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #3b2d1c;
+      flex-grow: 1;
+    }
+
+    /* YENİ HATIRA / LİNK EKLEME BUTONU VE FORMU */
+    .add-action-bar {
+      margin-bottom: 30px;
+      text-align: right;
+    }
+
+    .btn-add {
+      background: rgba(230, 183, 97, 0.15);
+      border: 1px dashed var(--gold-primary);
+      color: var(--gold-primary);
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-add:hover {
+      background: var(--gold-primary);
+      color: #121526;
+    }
+
+    .add-modal {
+      display: none;
+      background: #1e243f;
+      border: 1px solid var(--gold-primary);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 35px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .add-modal.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--gold-primary);
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 14px;
+      background: #14182b;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--gold-primary);
+    }
+
+    /* VİDEO VE BAĞLANTILAR */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .video-card {
+      background: var(--bg-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .video-embed {
+      width: 100%;
+      height: 200px;
+      border-radius: 8px;
+      border: none;
+      background: #000;
+      margin-bottom: 12px;
+    }
+
+    .video-title {
+      font-family: 'Cinzel', serif;
+      color: var(--gold-primary);
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+    }
+
+    .video-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* ANASAYFA VİTRİN */
+    .home-hero {
+      background: linear-gradient(135deg, rgba(30, 36, 63, 0.8), rgba(20, 24, 43, 0.9));
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .home-hero h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      color: var(--gold-primary);
+      margin-bottom: 12px;
+    }
+
+    .home-hero p {
+      max-width: 650px;
+      margin: 0 auto 24px;
+      color: #cbd5e1;
+      font-size: 1.1rem;
+      line-height: 1.7;
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 25px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(230, 183, 97, 0.2);
+      padding: 10px 22px;
+      border-radius: 30px;
+      font-size: 0.95rem;
+      color: var(--gold-hover);
+    }
+
+    @media (max-width: 768px) {
+      .book-container { padding: 25px; }
+      .intro-title { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. GİRİŞ HOŞ GELDİNİZ (INTRO) EKRANI -->
+  <div id="welcome-screen">
+    <div class="intro-emblem">✦ 📖 ✦</div>
+    <h1 class="intro-title">Macerasonu</h1>
+    <p class="intro-subtitle">
+      "Yıldızlar Teyvat'ın göğünde parıldarken, geride kalan tüm patikaların ve hatıraların saklandığı o gizli günlük..."
+    </p>
+    <button class="btn-enter" onclick="openBook()">GÜNLÜĞÜ AÇ</button>
+  </div>
+
+  <!-- ANA UYGULAMA ALANI -->
+  <div class="container">
+    <header>
+      <div class="site-title">✦ MACERASONU ✦</div>
+      <div class="site-tagline">Bir Seyyahın Genshin Impact Hatıra Defteri</div>
+    </header>
+
+    <!-- SEKME BUTONLARI -->
+    <nav class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('tab-home')">🏰 Anasayfa</button>
+      <button class="tab-btn" onclick="switchTab('tab-prologue')">📜 Önsöz (İç Dökme)</button>
+      <button class="tab-btn" onclick="switchTab('tab-memories')">📸 Hatıralar & Notlar</button>
+      <button class="tab-btn" onclick="switchTab('tab-videos')">🎬 Videolar & Linkler</button>
+    </nav>
+
+    <!-- SEKME 1: ANASAYFA -->
+    <section id="tab-home" class="tab-content active">
+      <div class="home-hero">
+        <h2>Yolculuğun Tamamlandığı Yer</h2>
+        <p>
+          Bu sayfa, fırtınalı dağlardan uçsuz bucaksız denizlere kadar birlikte geçirdiğimiz anların, 
+          göz alıcı manzaraların ve unutulmaz diyalogların saklandığı kişisel bir arşivdir.
+        </p>
+        <div class="stats-row">
+          <div class="stat-pill" id="stat-memory-count">✦ 3 Kayıtlı Hatıra</div>
+          <div class="stat-pill">✦ Teyvat Arşivi</div>
+          <div class="stat-pill">✦ Gizli Günlük</div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 20px;">
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Hatıraları okumak için yukarıdaki sekmeleri kullanabilir veya sağ üstten yeni anılar ekleyebilirsin.
+        </p>
+      </div>
+    </section>
+
+    <!-- SEKME 2: ÖNSÖZ (İÇİNİ DÖKME ALANI) -->
+    <section id="tab-prologue" class="tab-content">
+      <div class="book-container">
+        <h2 class="prologue-title">Seyyahın Önsözü</h2>
+        <div class="prologue-text" id="prologue-content">
+Buraya istediğin gibi içini dökebilirsin...
+
+Oyun boyunca gördüğün gün batımları, bazen saatlerce aynı manzarada durup müziği dinleyişimiz, zorlu boss savaşlarından sonraki sessizlik... 
+
+Bu sayfa, bu günlüğün asıl amacını tutan yer. Teyvat sadece bir oyun haritası değildi; bazen günün yorgunluğunu unuttuğumuz, bazen de sadece kafa dinlemek için kaçtığımız bir sığınaktı. 
+
+(Not: Aşağıdaki 'Önsözü Düzenle' butonuyla bu yazıyı dilediğin gibi değiştirebilirsin; yazdıkların tarayıcında saklanır.)
+        </div>
+        <div style="margin-top: 25px; text-align: right;">
+          <button class="btn-add" style="background:#533816; color:#f4ecd8; border:none;" onclick="editPrologue()">✍️ Önsözü Düzenle</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEKME 3: HATIRALAR & EKRAN GÖRÜNTÜLERİ -->
+    <section id="tab-memories" class="tab-content">
+      <div class="add-action-bar">
+        <button class="btn-add" onclick="toggleAddMemoryModal()">+ Yeni Hatıra Ekle</button>
+      </div>
+
+      <!-- Yeni Anı Ekleme Kartı -->
+      <div id="add-memory-modal" class="add-modal">
+        <h3 style="color: var(--gold-primary); margin-bottom: 16px; font-family: 'Cinzel';">Yeni Bir Hatıra Kaydet</h3>
+        <div class="form-group">
+          <label>Hatıra Başlığı / Mekan Adı:</label>
+          <input type="text" id="mem-title" class="form-control" placeholder="Örn: Guyun Taş Ormanı'nda Gün Batımı">
+        </div>
+        <div class="form-group">
+          <label>Tarih veya Not Etiketi:</label>
+          <input type="text" id="mem-date" class="form-control" placeholder="Örn: 14 Eylül - Mondstadt Gecesi">
+        </div>
+        <div class="form-group">
+          <label>Görsel URL'si (veya Ekran Görüntüsü Dosyası Yükle):</label>
+          <input type="text" id="mem-url" class="form-control" placeholder="https://resim-linki.com/foto.jpg" style="margin-bottom: 8px;">
+          <input type="file" id="mem-file" accept="image/*" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Hatıra Notun (Kısa veya Uzun):</label>
+          <textarea id="mem-note" class="form-control" rows="4" placeholder="O an ne hissediyordun? Hangi karakterle oradaydın?"></textarea>
+        </div>
+        <button class="btn-enter" style="font-size: 0.9rem; padding: 10px 24px;" onclick="saveNewMemory()">Kaydet ve Günlüğe Ekle</button>
+      </div>
+
+      <!-- Hatıraların Listelendiği Kitap Sayfası Izgarası -->
+      <div class="memories-grid" id="memories-list">
+        <!-- Varsayılan örnek kartlar -->
+      </div>
+    </section>
+
+    <!-- SEKME 4: VİDEOLAR & BAĞLANTILAR -->
+    <section id="tab-videos" class="tab-content">
+      <div class="add-action-bar">
+        <button class="btn-add" onclick="toggleAddVideoModal()">+ Video / Bağlantı Ekle</button>
+      </div>
+
+      <!-- Yeni Video Ekleme Kartı -->
+      <div id="add-video-modal" class="add-modal">
+        <h3 style="color: var(--gold-primary); margin-bottom: 16px; font-family: 'Cinzel';">Video veya Dış Bağlantı Ekle</h3>
+        <div class="form-group">
+          <label>Başlık:</label>
+          <input type="text" id="vid-title" class="form-control" placeholder="Örn: Teyvat Gece Müzikleri veya Boss Kesimi">
+        </div>
+        <div class="form-group">
+          <label>YouTube Embed Linki ya da Web Bağlantısı:</label>
+          <input type="text" id="vid-url" class="form-control" placeholder="https://www.youtube.com/embed/... ya da Google Drive linki">
+        </div>
+        <div class="form-group">
+          <label>Açıklama / Not:</label>
+          <textarea id="vid-desc" class="form-control" rows="2" placeholder="Video hakkında kısa bir anı veya detay..."></textarea>
+        </div>
+        <button class="btn-enter" style="font-size: 0.9rem; padding: 10px 24px;" onclick="saveNewVideo()">Bağlantıyı Ekle</button>
+      </div>
+
+      <div class="video-grid" id="video-list">
+        <!-- Örnek Video Kartı -->
+        <div class="video-card">
+          <iframe class="video-embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video" allowfullscreen></iframe>
+          <h4 class="video-title">Örnek Video / Kesit</h4>
+          <p class="video-desc">Genshin'de çektiğin kesitleri buraya embed linki veya drive linki olarak ekleyebilirsin.</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // Başlangıç Örnek Hatıraları (Yerel Depolamada yoksa yüklenir)
+    const initialMemories = [
+      {
+        title: "Karanlık Çökerken Qingce Köyü",
+        date: "Liyue Yolculuğu",
+        img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&auto=format&fit=crop&q=80",
+        note: "Teraslı pirinç tarlalarının arasından geçerken çalan o flüt melodisini unutmak imkansız. Saatlerce tepeye tırmanıp sırf manzaranın renk değişimini izlemiştik."
+      },
+      {
+        title: "Ejderhasırtı'nın Zirvesi (Dragonspine)",
+        date: "Mondstadt Anıları",
+        img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&auto=format&fit=crop&q=80",
+        note: "Soğuktan canımız azalırken bulduğumuz o son ısıtıcı sütun... Tam bir kaos ve kurtuluş anıydı."
+      }
+    ];
+
+    // Sayfa Yüklendiğinde
+    window.addEventListener('DOMContentLoaded', () => {
+      loadPrologue();
+      loadMemories();
+    });
+
+    // Açılış İntrosu
+    function openBook() {
+      document.getElementById('welcome-screen').classList.add('hidden');
+    }
+
+    // Sekmeler Arası Geçiş
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+      document.getElementById(tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    // Önsöz Düzenleme Mantığı
+    function editPrologue() {
+      const current = document.getElementById('prologue-content').innerText;
+      const updated = prompt("Önsöz yazını güncelle:", current);
+      if (updated !== null && updated.trim() !== "") {
+        document.getElementById('prologue-content').innerText = updated;
+        localStorage.setItem('macerasonu_prologue', updated);
+      }
+    }
+
+    function loadPrologue() {
+      const saved = localStorage.getItem('macerasonu_prologue');
+      if (saved) {
+        document.getElementById('prologue-content').innerText = saved;
+      }
+    }
+
+    // Hatıraları Yükleme ve Render Etme
+    function loadMemories() {
+      const saved = localStorage.getItem('macerasonu_memories');
+      const memories = saved ? JSON.parse(saved) : initialMemories;
+      const list = document.getElementById('memories-list');
+      list.innerHTML = "";
+
+      memories.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'memory-card';
+        card.innerHTML = `
+          <img src="${item.img}" alt="${item.title}" class="memory-img" onerror="this.src='https://placehold.co/600x400/2f2519/f4ecd8?text=Hatıra+Görseli'">
+          <div class="memory-body">
+            <div class="memory-meta">
+              <span>✦ ${item.date || 'Teyvat Hatırası'}</span>
+            </div>
+            <h3 class="memory-title">${item.title}</h3>
+            <p class="memory-note">${item.note}</p>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+
+      document.getElementById('stat-memory-count').innerText = `✦ ${memories.length} Kayıtlı Hatıra`;
+    }
+
+    // Yeni Hatıra Modal Aç/Kapat
+    function toggleAddMemoryModal() {
+      const modal = document.getElementById('add-memory-modal');
+      modal.classList.toggle('active');
+    }
+
+    // Yeni Hatıra Kaydetme (Dosyadan veya URL'den)
+    function saveNewMemory() {
+      const title = document.getElementById('mem-title').value;
+      const date = document.getElementById('mem-date').value;
+      const urlInput = document.getElementById('mem-url').value;
+      const note = document.getElementById('mem-note').value;
+      const fileInput = document.getElementById('mem-file');
+
+      if (!title || !note) {
+        alert("Lütfen en azından bir başlık ve not ekleyin!");
+        return;
+      }
+
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          commitMemory({ title, date, img: e.target.result, note });
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        const img = urlInput.trim() !== "" ? urlInput : 'https://placehold.co/600x400/2f2519/f4ecd8?text=Genshin+Hatırası';
+        commitMemory({ title, date, img, note });
+      }
+    }
+
+    function commitMemory(newMem) {
+      const saved = localStorage.getItem('macerasonu_memories');
+      const memories = saved ? JSON.parse(saved) : initialMemories;
+      memories.unshift(newMem);
+      localStorage.setItem('macerasonu_memories', JSON.stringify(memories));
+      
+      loadMemories();
+      toggleAddMemoryModal();
+
+      // Formu sıfırla
+      document.getElementById('mem-title').value = "";
+      document.getElementById('mem-date').value = "";
+      document.getElementById('mem-url').value = "";
+      document.getElementById('mem-note').value = "";
+      document.getElementById('mem-file').value = "";
+    }
+
+    // Video Modal Aç/Kapat
+    function toggleAddVideoModal() {
+      const modal = document.getElementById('add-video-modal');
+      modal.classList.toggle('active');
+    }
+
+    function saveNewVideo() {
+      const title = document.getElementById('vid-title').value;
+      const url = document.getElementById('vid-url').value;
+      const desc = document.getElementById('vid-desc').value;
+
+      if (!title || !url) {
+        alert("Lütfen başlık ve video bağlantısını doldurun!");
+        return;
+      }
+
+      const list = document.getElementById('video-list');
+      const card = document.createElement('div');
+      card.className = 'video-card';
+      
+      let embedHtml = '';
+      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        let embedUrl = url.replace("watch?v=", "embed/");
+        embedHtml = `<iframe class="video-embed" src="${embedUrl}" allowfullscreen></iframe>`;
+      } else {
+        embedHtml = `<div style="padding: 20px; background: rgba(0,0,0,0.3); border-radius: 8px; margin-bottom: 12px; text-align: center;">
+          <a href="${url}" target="_blank" style="color: var(--accent-cyan); text-decoration: underline;">🔗 Video / Bağlantıyı Aç</a>
+        </div>`;
+      }
+
+      card.innerHTML = `
+        ${embedHtml}
+        <h4 class="video-title">${title}</h4>
+        <p class="video-desc">${desc}</p>
+      `;
+
+      list.prepend(card);
+      toggleAddVideoModal();
+
+      document.getElementById('vid-title').value = "";
+      document.getElementById('vid-url').value = "";
+      document.getElementById('vid-desc').value = "";
+    }
+  </script>
+</body>
+</html>
